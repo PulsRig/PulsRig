@@ -4,6 +4,14 @@ Windows-Programm für Treiber, Boost und Werkzeuge: sucht neuere Treiber (Window
 
 **Testversion.** Fehler bitte mit dem Diagnose-Paket melden (im Programm: Hardware → Diagnose-Paket).
 
+![Startseite von PulsRig mit dem SCAN-Knopf](bilder/start.png)
+
+| Ergebnisse eines Scans | Hardware-Seite |
+| --- | --- |
+| ![Liste mit neueren Treibern und Geräten mit Fehlern](bilder/ergebnisse.png) | ![Sensoren, Stabilitätstest, Laufwerke, Arbeitsspeicher, Diagnose-Paket und Prüfbericht](bilder/hardware.png) |
+
+Die Bilder zeigen Beispieldaten.
+
 ## Herunterladen
 
 Die aktuelle Setup-Datei steht unter [Releases](../../releases/latest).
