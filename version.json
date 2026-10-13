@@ -1,4 +1,7 @@
 {
     "Version":  "0.6 Beta",
-    "Gebaut":  "13.10.2026 22:05 · Stand 172425d"
+    "Gebaut":  "13.10.2026 22:45 · Stand c3cdeaf",
+    "Setup":  "https://github.com/PulsRig/PulsRig/releases/download/v0.6-beta-20261013-2245/PulsRig-Setup-0.6-Beta.exe",
+    "Bytes":  2264370,
+    "Sha256":  "E87AC064CFAF6346C0840CA4EBFC7B8E85A4EA6B211455F69C9736B06F728E0D"
 }
