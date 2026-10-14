@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="de" data-lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PulsRig</title>
+<meta name="description" content="PulsRig: Treiber prüfen, vor dem Spielen Platz schaffen und die Hardware testen. Kostenlos für Windows 10 und 11.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 66 52'%3E%3Cpath d='M2 30h16l8-16 10 36 10-48 8 28h10' fill='none' stroke='%2322D3EE' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0a0f1f;
+    --bg2: #0e1530;
+    --card: rgba(255, 255, 255, 0.045);
+    --edge: rgba(255, 255, 255, 0.09);
+    --text: #e8ecf8;
+    --dim: #9aa6c4;
+    --faint: #66728f;
+    --cyan: #22d3ee;
+    --violet: #8b5cf6;
+    --orange: #fb923c;
+    --rose: #f43f5e;
+    --good: #34d399;
+    --warn: #fbbf24;
+    --grad: linear-gradient(90deg, var(--cyan), var(--violet));
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  html[data-lang="de"] [lang="en"], html[data-lang="en"] [lang="de"] { display: none; }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* Kopf */
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(10, 15, 31, 0.78);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--edge);
+  }
+  .bar { display: flex; align-items: center; gap: 28px; height: 64px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 19px; }
+  .logo svg { width: 30px; height: 24px; }
+  .logo b { font-weight: 700; }
+  .logo .name span { font-weight: 400; color: var(--dim); }
+  nav { display: flex; gap: 22px; margin-left: auto; }
+  nav a { text-decoration: none; color: var(--dim); font-size: 14.5px; }
+  nav a:hover { color: var(--text); }
+  .lang { display: flex; border: 1px solid var(--edge); border-radius: 999px; padding: 3px; }
+  .lang button {
+    background: none; border: 0; color: var(--dim); font: inherit; font-size: 13px;
+    padding: 3px 11px; border-radius: 999px; cursor: pointer;
+  }
+  .lang button[aria-pressed="true"] { background: rgba(255, 255, 255, 0.1); color: var(--text); }
+
+  /* Knöpfe */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 13px 24px; border-radius: 14px;
+    background: var(--grad); color: #fff; font-weight: 600; text-decoration: none;
+    box-shadow: 0 10px 30px -10px rgba(139, 92, 246, 0.6);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 14px 34px -10px rgba(139, 92, 246, 0.75); }
+  .btn svg { width: 18px; height: 18px; }
+  .btn.small { padding: 8px 16px; border-radius: 11px; font-size: 14px; box-shadow: none; }
+  .ghost {
+    display: inline-flex; align-items: center; padding: 13px 22px; border-radius: 14px;
+    border: 1px solid var(--edge); background: var(--card); color: var(--text); text-decoration: none; font-weight: 500;
+  }
+  .ghost:hover { border-color: rgba(255, 255, 255, 0.2); }
+
+  /* Einstieg */
+  .hero { position: relative; padding: 76px 0 40px; text-align: center; overflow: hidden; }
+  .hero::before {
+    content: ""; position: absolute; inset: -200px -10% auto; height: 700px; z-index: -1;
+    background:
+      radial-gradient(closest-side at 30% 40%, rgba(34, 211, 238, 0.16), transparent),
+      radial-gradient(closest-side at 70% 30%, rgba(139, 92, 246, 0.18), transparent),
+      radial-gradient(closest-side at 50% 80%, rgba(251, 146, 60, 0.08), transparent);
+  }
+  .tag {
+    display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px; border-radius: 999px;
+    border: 1px solid var(--edge); background: var(--card); color: var(--dim); font-size: 13.5px;
+  }
+  .tag i { width: 7px; height: 7px; border-radius: 50%; background: var(--good); }
+  h1 { font-size: clamp(34px, 5.4vw, 58px); line-height: 1.1; letter-spacing: -0.02em; margin: 22px auto 18px; max-width: 840px; }
+  h1 em {
+    font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .lead { color: var(--dim); font-size: 18.5px; max-width: 660px; margin: 0 auto 32px; }
+  .actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .meta { color: var(--faint); font-size: 13.5px; margin-top: 16px; }
+  .shot {
+    margin: 56px auto 0; max-width: 980px; border-radius: 18px; overflow: hidden;
+    border: 1px solid var(--edge);
+    box-shadow: 0 40px 120px -30px rgba(34, 211, 238, 0.25), 0 30px 80px -20px rgba(0, 0, 0, 0.7);
+  }
+  .shot img { display: block; width: 100%; height: auto; }
+
+  /* Abschnitte */
+  section { padding: 84px 0 0; }
+  .eyebrow { color: var(--cyan); font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+  h2 { font-size: clamp(26px, 3.4vw, 38px); line-height: 1.2; letter-spacing: -0.01em; margin: 8px 0 12px; }
+  .intro { color: var(--dim); max-width: 640px; margin: 0 0 36px; }
+
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .card {
+    background: var(--card); border: 1px solid var(--edge); border-radius: 18px; padding: 22px;
+  }
+  .icon {
+    width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; margin-bottom: 14px;
+  }
+  .icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .card h3 { margin: 0 0 6px; font-size: 17.5px; }
+  .card p { margin: 0; color: var(--dim); font-size: 14.5px; }
+  .card ul { margin: 12px 0 0; padding: 0; list-style: none; color: var(--dim); font-size: 14px; }
+  .card li { padding-left: 16px; position: relative; margin-top: 5px; }
+  .card li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 6px; height: 6px; border-radius: 50%; background: var(--faint); }
+
+  .extras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+  .extra { display: flex; gap: 14px; align-items: flex-start; }
+  .extra .icon { flex: none; margin: 0; width: 38px; height: 38px; border-radius: 11px; }
+  .extra .icon svg { width: 19px; height: 19px; }
+  .extra h3 { font-size: 15.5px; }
+  .extra p { font-size: 14px; }
+
+  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  figure { margin: 0; }
+  figure img {
+    display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--edge); cursor: zoom-in;
+    transition: transform 0.2s;
+  }
+  figure img:hover { transform: translateY(-2px); }
+  figcaption { color: var(--dim); font-size: 14px; margin-top: 10px; }
+  .note { color: var(--faint); font-size: 13.5px; margin-top: 14px; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: step; }
+  .step { position: relative; padding-top: 58px; }
+  .step::before {
+    counter-increment: step; content: counter(step);
+    position: absolute; top: 20px; left: 22px; width: 28px; height: 28px; border-radius: 50%;
+    display: grid; place-items: center; font-weight: 700; font-size: 14px;
+    background: var(--grad); color: #fff;
+  }
+  kbd {
+    font: inherit; font-size: 13px; padding: 1px 7px; border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08); border: 1px solid var(--edge); color: var(--text); white-space: nowrap;
+  }
+
+  .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  details { background: var(--card); border: 1px solid var(--edge); border-radius: 16px; padding: 16px 20px; }
+  summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--faint); font-weight: 400; font-size: 20px; line-height: 1; }
+  details[open] summary::after { content: "–"; }
+  details p { color: var(--dim); font-size: 14.5px; margin: 10px 0 0; }
+
+  .cta {
+    margin-top: 84px; padding: 46px 28px; border-radius: 24px; text-align: center;
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(139, 92, 246, 0.14));
+    border: 1px solid var(--edge);
+  }
+  .cta h2 { margin-top: 0; }
+  .cta p { color: var(--dim); margin: 0 0 26px; }
+
+  footer { color: var(--faint); font-size: 13.5px; padding: 40px 0 48px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  footer a { color: var(--dim); }
+
+  /* Großansicht der Bilder */
+  .zoom {
+    position: fixed; inset: 0; z-index: 20; background: rgba(5, 8, 18, 0.92); display: none;
+    align-items: center; justify-content: center; padding: 24px; cursor: zoom-out;
+  }
+  .zoom.on { display: flex; }
+  .zoom img { max-width: 100%; max-height: 100%; border-radius: 14px; }
+
+  @media (max-width: 960px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .extras, .gallery, .steps { grid-template-columns: 1fr; }
+    .faq { grid-template-columns: 1fr; }
+    nav { display: none; }
+    .lang { margin-left: auto; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 0 16px; }
+    .grid { grid-template-columns: 1fr; }
+    .hero { padding-top: 48px; }
+    .bar .btn.small { display: none; }
+    .lead { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#top">
+      <svg viewBox="0 0 66 52" aria-hidden="true">
+        <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+        <path d="M2 30h16l8-16 10 36 10-48 8 28h10" fill="none" stroke="url(#g)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="name"><span>Puls</span><b>Rig</b></span>
+    </a>
+    <nav>
+      <a href="#funktionen"><span lang="de">Funktionen</span><span lang="en">Features</span></a>
+      <a href="#bilder"><span lang="de">Bilder</span><span lang="en">Screenshots</span></a>
+      <a href="#installieren"><span lang="de">Installieren</span><span lang="en">Install</span></a>
+      <a href="#fragen"><span lang="de">Fragen</span><span lang="en">FAQ</span></a>
+    </nav>
+    <div class="lang" role="group" aria-label="Sprache / Language">
+      <button type="button" data-set="de">DE</button>
+      <button type="button" data-set="en">EN</button>
+    </div>
+    <a class="btn small download" href="https://github.com/PulsRig/PulsRig/releases/latest">
+      <span lang="de">Herunterladen</span><span lang="en">Download</span>
+    </a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <span class="tag"><i></i><span lang="de">Kostenlos · Windows 10 und 11</span><span lang="en">Free · Windows 10 and 11</span></span>
+      <h1>
+        <span lang="de">Treiber, Boost und Hardware-Check <em>in einem Programm</em></span>
+        <span lang="en">Drivers, boost and hardware check <em>in one app</em></span>
+      </h1>
+      <p class="lead">
+        <span lang="de">PulsRig findet neuere Treiber, schafft vor dem Spielen Platz und prüft, ob Laufwerke, Arbeitsspeicher und Grafikkarte in Ordnung sind. Jeder Schritt erklärt sich, nichts passiert ohne Rückfrage.</span>
+        <span lang="en">PulsRig finds newer drivers, frees up resources before you play and checks whether drives, memory and graphics card are healthy. Every step explains itself, nothing happens without asking.</span>
+      </p>
+      <div class="actions">
+        <a class="btn download" href="https://github.com/PulsRig/PulsRig/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>
+          <span lang="de">Für Windows herunterladen</span><span lang="en">Download for Windows</span>
+        </a>
+        <a class="ghost" href="#funktionen"><span lang="de">Was es kann</span><span lang="en">What it does</span></a>
+      </div>
+      <p class="meta" id="meta"><span lang="de">Testversion · Setup-Datei, rund 2 MB</span><span lang="en">Beta · setup file, about 2 MB</span></p>
+      <div class="shot"><img src="bilder/start.png" width="1108" height="728" alt="PulsRig mit dem SCAN-Knopf"></div>
+    </div>
+  </div>
+
+  <section id="funktionen">
+    <div class="wrap">
+      <div class="eyebrow"><span lang="de">Funktionen</span><span lang="en">Features</span></div>
+      <h2><span lang="de">Vier Bereiche, ein Fenster</span><span lang="en">Four areas, one window</span></h2>
+      <p class="intro">
+        <span lang="de">Was PulsRig ändern will, zeigt es vorher an. Werkzeuge laufen zuerst als Probelauf, vor Treibern legt es einen Wiederherstellungspunkt an.</span>
+        <span lang="en">PulsRig shows what it wants to change before it does it. Tools start as a dry run, and before drivers it creates a restore point.</span>
+      </p>
+      <div class="grid">
+        <div class="card">
+          <div class="icon" style="background: rgba(34,211,238,.14); color: var(--cyan)">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+          </div>
+          <h3>Scan</h3>
+          <p lang="de">Neuere Treiber für alle Geräte.</p>
+          <p lang="en">Newer drivers for every device.</p>
+          <ul lang="de"><li>Windows Update, NVIDIA, AMD und der Microsoft-Katalog</li><li>Geräte mit Fehlern auf einen Blick</li><li>Sicherung vor jeder Installation</li></ul>
+          <ul lang="en"><li>Windows Update, NVIDIA, AMD and the Microsoft Catalog</li><li>Devices with errors at a glance</li><li>Backup before every install</li></ul>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(251,146,60,.14); color: var(--orange)">
+            <svg viewBox="0 0 24 24"><path d="M4.5 16a8 8 0 1 1 15 0"/><path d="m12 13 3.5-4"/><circle cx="12" cy="13" r="1.2"/></svg>
+          </div>
+          <h3>Boost</h3>
+          <p lang="de">Mehr Luft vor dem Spielen.</p>
+          <p lang="en">More headroom before you play.</p>
+          <ul lang="de"><li>Energieplan, Spielmodus, entbehrliche Dienste</li><li>Auf Wunsch automatisch beim Spielstart</li><li>Ein Klick stellt alles zurück</li></ul>
+          <ul lang="en"><li>Power plan, game mode, non-essential services</li><li>Automatically when a game starts, if you like</li><li>One click restores everything</li></ul>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(139,92,246,.16); color: var(--violet)">
+            <svg viewBox="0 0 24 24"><path d="M14.5 5.5a4 4 0 0 0-5 5L4 16l4 4 5.5-5.5a4 4 0 0 0 5-5l-2.5 2.5-2.5-.5-.5-2.5z"/></svg>
+          </div>
+          <h3><span lang="de">Werkzeuge</span><span lang="en">Tools</span></h3>
+          <p lang="de">Reparaturen ohne Suchen in Windows.</p>
+          <p lang="en">Fixes without digging through Windows.</p>
+          <ul lang="de"><li>Ton, Netzwerk, Bildauflösung, Gerätefehler</li><li>Treiber sichern und Offline-Paket</li><li>Autostart und Speicherplatz freigeben</li></ul>
+          <ul lang="en"><li>Sound, network, display resolution, device errors</li><li>Driver backup and offline package</li><li>Startup apps and freeing disk space</li></ul>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(52,211,153,.14); color: var(--good)">
+            <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2.5V6m6-3.5V6M9 18v3.5m6-3.5v3.5M2.5 9H6m-3.5 6H6m12-6h3.5M18 15h3.5"/></svg>
+          </div>
+          <h3>Hardware</h3>
+          <p lang="de">Prüfen, ob der PC gesund ist.</p>
+          <p lang="en">Check whether the PC is healthy.</p>
+          <ul lang="de"><li>Stabilitätstest für Prozessor und Grafikkarte</li><li>Laufwerke mit Tempo und Verlauf</li><li>Arbeitsspeicher und Prüfbericht</li></ul>
+          <ul lang="en"><li>Stability test for CPU and graphics card</li><li>Drives with speed test and history</li><li>Memory check and report</li></ul>
+        </div>
+      </div>
+
+      <div class="extras">
+        <div class="card extra">
+          <div class="icon" style="background: rgba(34,211,238,.12); color: var(--cyan)">
+            <svg viewBox="0 0 24 24"><path d="M12 3.5a5.5 5.5 0 0 0-5.5 5.5v3.5L5 15.5h14l-1.5-3V9A5.5 5.5 0 0 0 12 3.5zM10 19a2 2 0 0 0 4 0"/></svg>
+          </div>
+          <div>
+            <h3><span lang="de">Helfer neben der Uhr</span><span lang="en">Helper in the tray</span></h3>
+            <p lang="de">Sieht einmal pro Woche nach neuen Treibern und meldet sich nur, wenn es etwas gibt.</p>
+            <p lang="en">Checks for new drivers once a week and only speaks up when there is something.</p>
+          </div>
+        </div>
+        <div class="card extra">
+          <div class="icon" style="background: rgba(251,191,36,.12); color: var(--warn)">
+            <svg viewBox="0 0 24 24"><path d="M12 4 2.5 20h19z"/><path d="M12 10v4.5m0 2.5v.01"/></svg>
+          </div>
+          <div>
+            <h3><span lang="de">Warnt rechtzeitig</span><span lang="en">Warns early</span></h3>
+            <p lang="de">Meldet ein Laufwerk Störungen oder wird langsamer, steht es auf der Startseite.</p>
+            <p lang="en">If a drive reports faults or gets slower, the start page says so.</p>
+          </div>
+        </div>
+        <div class="card extra">
+          <div class="icon" style="background: rgba(139,92,246,.14); color: var(--violet)">
+            <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v4.5h-4.5"/></svg>
+          </div>
+          <div>
+            <h3><span lang="de">Updates per Knopfdruck</span><span lang="en">One-click updates</span></h3>
+            <p lang="de">Neue Fassungen lädt PulsRig selbst und prüft vorher Größe und Prüfsumme.</p>
+            <p lang="en">PulsRig downloads new versions itself and checks size and checksum first.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="bilder">
+    <div class="wrap">
+      <div class="eyebrow"><span lang="de">Bilder</span><span lang="en">Screenshots</span></div>
+      <h2><span lang="de">So sieht es aus</span><span lang="en">What it looks like</span></h2>
+      <div class="gallery">
+        <figure>
+          <img src="bilder/ergebnisse.png" width="1108" height="728" loading="lazy" alt="Ergebnisse eines Scans">
+          <figcaption><span lang="de">Ergebnisse eines Scans: neuere Treiber und Geräte mit Fehlern</span><span lang="en">Scan results: newer drivers and devices with errors</span></figcaption>
+        </figure>
+        <figure>
+          <img src="bilder/werkzeuge.png" width="1108" height="728" loading="lazy" alt="Werkzeuge">
+          <figcaption><span lang="de">Werkzeuge: schnelle Reparaturen, Treiber, System und Spiele</span><span lang="en">Tools: quick fixes, drivers, system and games</span></figcaption>
+        </figure>
+        <figure>
+          <img src="bilder/hardware.png" width="1108" height="728" loading="lazy" alt="Hardware">
+          <figcaption><span lang="de">Hardware: Sensoren, Stabilitätstest, Laufwerke, Arbeitsspeicher</span><span lang="en">Hardware: sensors, stability test, drives, memory</span></figcaption>
+        </figure>
+      </div>
+      <p class="note"><span lang="de">Die Bilder zeigen Beispieldaten. Ein Klick vergrößert sie.</span><span lang="en">The screenshots show sample data and are in German. Click to enlarge.</span></p>
+    </div>
+  </section>
+
+  <section id="installieren">
+    <div class="wrap">
+      <div class="eyebrow"><span lang="de">Installieren</span><span lang="en">Install</span></div>
+      <h2><span lang="de">In einer Minute startklar</span><span lang="en">Ready in a minute</span></h2>
+      <div class="steps">
+        <div class="card step">
+          <h3><span lang="de">Setup laden</span><span lang="en">Download the setup</span></h3>
+          <p lang="de">Über den Knopf oben. Die Datei ist rund 2 MB groß.</p>
+          <p lang="en">Use the button above. The file is about 2 MB.</p>
+        </div>
+        <div class="card step">
+          <h3><span lang="de">Warnung bestätigen</span><span lang="en">Confirm the warning</span></h3>
+          <p lang="de">PulsRig ist nicht signiert, deshalb warnt Windows. Auf <kbd>Weitere Informationen</kbd> und dann <kbd>Trotzdem ausführen</kbd> klicken.</p>
+          <p lang="en">PulsRig is not signed, so Windows warns you. Click <kbd>More info</kbd> and then <kbd>Run anyway</kbd>.</p>
+        </div>
+        <div class="card step">
+          <h3><span lang="de">Loslegen</span><span lang="en">Get started</span></h3>
+          <p lang="de">PulsRig starten und auf SCAN klicken. Die Sprache lässt sich unter Einstellungen auf Englisch stellen.</p>
+          <p lang="en">Start PulsRig, switch the language to English under Settings → General, and click SCAN.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="fragen">
+    <div class="wrap">
+      <div class="eyebrow"><span lang="de">Fragen</span><span lang="en">FAQ</span></div>
+      <h2><span lang="de">Gut zu wissen</span><span lang="en">Good to know</span></h2>
+      <div class="faq">
+        <details>
+          <summary><span lang="de">Was kostet PulsRig?</span><span lang="en">How much does PulsRig cost?</span></summary>
+          <p lang="de">Nichts. Es gibt keine Werbung, kein Konto und keine Bezahlversion.</p>
+          <p lang="en">Nothing. There are no ads, no account and no paid version.</p>
+        </details>
+        <details>
+          <summary><span lang="de">Schickt PulsRig Daten weg?</span><span lang="en">Does PulsRig send any data?</span></summary>
+          <p lang="de">Nein. Es fragt nur Windows Update, NVIDIA, AMD und den Microsoft-Katalog nach Treibern und sieht hier nach neuen Fassungen. Das Diagnose-Paket bleibt auf dem PC, bis du es selbst verschickst.</p>
+          <p lang="en">No. It only asks Windows Update, NVIDIA, AMD and the Microsoft Catalog for drivers and checks this site for new versions. The diagnostics package stays on your PC until you send it yourself.</p>
+        </details>
+        <details>
+          <summary><span lang="de">Kann dabei etwas kaputtgehen?</span><span lang="en">Can anything break?</span></summary>
+          <p lang="de">Vor Treiberinstallationen legt PulsRig einen Wiederherstellungspunkt an und sichert die bisherigen Treiber. Werkzeuge prüfen zuerst und fragen, bevor sie etwas ändern.</p>
+          <p lang="en">Before installing drivers PulsRig creates a restore point and backs up the current drivers. Tools check first and ask before they change anything.</p>
+        </details>
+        <details>
+          <summary><span lang="de">Braucht es Adminrechte?</span><span lang="en">Does it need admin rights?</span></summary>
+          <p lang="de">Zum Scannen nicht. Zum Installieren von Treibern, für den Boost und für manche Werkzeuge schon. PulsRig startet sich dafür auf Wunsch neu.</p>
+          <p lang="en">Not for scanning. Installing drivers, the boost and some tools do. PulsRig restarts itself with admin rights when you ask it to.</p>
+        </details>
+        <details>
+          <summary><span lang="de">Wie bekomme ich neue Fassungen?</span><span lang="en">How do I get new versions?</span></summary>
+          <p lang="de">PulsRig zeigt oben rechts an, wenn es eine neuere gibt. Ein Klick lädt und installiert sie, die Einstellungen bleiben erhalten.</p>
+          <p lang="en">PulsRig shows a note in the top right when a newer one exists. One click downloads and installs it, your settings are kept.</p>
+        </details>
+        <details>
+          <summary><span lang="de">Etwas klappt nicht. Was tun?</span><span lang="en">Something doesn't work. What now?</span></summary>
+          <p lang="de">Unter Hardware → Diagnose-Paket eine ZIP-Datei erstellen und mit ein paar Worten zum Fehler an <a href="mailto:pulsrig.hilfe@gmail.com?subject=PulsRig%3A%20Diagnose-Paket">pulsrig.hilfe@gmail.com</a> schicken. Der Knopf „Per E-Mail schicken“ bereitet die Mail vor. Das Paket enthält keine Seriennummern, keinen Benutzer- und keinen PC-Namen.</p>
+          <p lang="en">Create a ZIP file under Hardware → Diagnostics package and send it with a few words about the problem to <a href="mailto:pulsrig.hilfe@gmail.com?subject=PulsRig%3A%20diagnostics%20package">pulsrig.hilfe@gmail.com</a>. The “Send by email” button prepares the email. The package contains no serial numbers, no user name and no PC name.</p>
+        </details>
+      </div>
+
+      <div class="cta">
+        <h2><span lang="de">Bereit für einen Scan?</span><span lang="en">Ready for a scan?</span></h2>
+        <p id="meta2"><span lang="de">Kostenlos für Windows 10 und 11, 64 Bit</span><span lang="en">Free for Windows 10 and 11, 64-bit</span></p>
+        <a class="btn download" href="https://github.com/PulsRig/PulsRig/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>
+          <span lang="de">PulsRig herunterladen</span><span lang="en">Download PulsRig</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="wrap">
+  <footer>
+    <span>PulsRig · <span lang="de">Testversion</span><span lang="en">Beta</span></span>
+    <span>
+      <a href="mailto:pulsrig.hilfe@gmail.com"><span lang="de">Hilfe und Fehler</span><span lang="en">Help and bug reports</span>: pulsrig.hilfe@gmail.com</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/PulsRig/PulsRig/releases">GitHub: <span lang="de">alle Fassungen</span><span lang="en">all versions</span></a>
+    </span>
+  </footer>
+</div>
+
+<div class="zoom" id="zoom"><img alt=""></div>
+
+<script>
+  // Sprache: gespeicherte Wahl, sonst die des Browsers
+  (function () {
+    var root = document.documentElement;
+    function set(lang) {
+      root.setAttribute('data-lang', lang);
+      root.setAttribute('lang', lang);
+      document.querySelectorAll('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.set === lang); });
+      try { localStorage.setItem('pulsrig-lang', lang); } catch (e) {}
+    }
+    var saved = null;
+    try { saved = localStorage.getItem('pulsrig-lang'); } catch (e) {}
+    set(saved || ((navigator.language || 'de').toLowerCase().indexOf('de') === 0 ? 'de' : 'en'));
+    document.querySelectorAll('.lang button').forEach(function (b) { b.addEventListener('click', function () { set(b.dataset.set); }); });
+
+    // Download-Knöpfe zeigen direkt auf die Setup-Datei der aktuellen Fassung (aus version.json neben dieser Seite)
+    fetch('version.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (note) {
+      if (!note || !/^https:\/\/github\.com\/PulsRig\/PulsRig\/releases\//.test(note.Setup || '')) return;
+      document.querySelectorAll('a.download').forEach(function (a) { a.href = note.Setup; });
+      var day = String(note.Gebaut || '').slice(0, 10);
+      var mb = note.Bytes ? (note.Bytes / 1048576).toFixed(1).replace('.', ',') : '';
+      var mbEn = note.Bytes ? (note.Bytes / 1048576).toFixed(1) : '';
+      document.getElementById('meta').innerHTML =
+        '<span lang="de">Version ' + note.Version + ' vom ' + day + (mb ? ' · ' + mb + ' MB' : '') + '</span>' +
+        '<span lang="en">Version ' + note.Version + ', built ' + day + (mbEn ? ' · ' + mbEn + ' MB' : '') + '</span>';
+    }).catch(function () {});
+
+    // Bilder groß ansehen
+    var zoom = document.getElementById('zoom');
+    document.querySelectorAll('figure img, .shot img').forEach(function (img) {
+      img.addEventListener('click', function () { zoom.querySelector('img').src = img.src; zoom.classList.add('on'); });
+    });
+    zoom.addEventListener('click', function () { zoom.classList.remove('on'); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') zoom.classList.remove('on'); });
+  })();
+</script>
+</body>
+</html>
