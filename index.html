@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PulsRig</title>
 <meta name="description" content="PulsRig: Treiber prüfen, vor dem Spielen Platz schaffen und die Hardware testen. Kostenlos für Windows 10 und 11.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 66 52'%3E%3Cpath d='M2 30h16l8-16 10 36 10-48 8 28h10' fill='none' stroke='%2322D3EE' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 66 52'%3E%3Cpath d='M2 30h16l8-16 10 36 10-48 8 28h10' fill='none' stroke='%235CC8FF' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
   :root {
-    --bg: #0a0f1f;
-    --bg2: #0e1530;
-    --card: rgba(255, 255, 255, 0.045);
-    --edge: rgba(255, 255, 255, 0.09);
-    --text: #e8ecf8;
-    --dim: #9aa6c4;
-    --faint: #66728f;
-    --cyan: #22d3ee;
-    --violet: #8b5cf6;
+    --bg: #090d17;
+    --bg2: #0d1322;
+    --card: rgba(15, 22, 38, 0.86);
+    --edge: rgba(255, 255, 255, 0.08);
+    --text: #e9edf5;
+    --dim: #a0aabf;
+    --faint: #6b7590;
+    --cyan: #5cc8ff;
+    --violet: #9b7bff;
     --orange: #fb923c;
     --rose: #f43f5e;
     --good: #34d399;
@@ -39,13 +39,14 @@
   /* Kopf */
   header {
     position: sticky; top: 0; z-index: 10;
-    background: rgba(10, 15, 31, 0.78);
+    background: rgba(9, 13, 23, 0.8);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--edge);
   }
   .bar { display: flex; align-items: center; gap: 28px; height: 64px; }
   .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 19px; }
-  .logo svg { width: 30px; height: 24px; }
+  .logo .mark { width: 34px; height: 34px; border-radius: 10px; background: var(--grad); display: grid; place-items: center; box-shadow: 0 6px 20px -6px rgba(92, 200, 255, 0.6); }
+  .logo .mark svg { width: 21px; height: 17px; }
   .logo b { font-weight: 700; }
   .logo .name span { font-weight: 400; color: var(--dim); }
   nav { display: flex; gap: 22px; margin-left: auto; }
@@ -62,11 +63,11 @@
   .btn {
     display: inline-flex; align-items: center; gap: 10px;
     padding: 13px 24px; border-radius: 14px;
-    background: var(--grad); color: #fff; font-weight: 600; text-decoration: none;
-    box-shadow: 0 10px 30px -10px rgba(139, 92, 246, 0.6);
+    background: var(--grad); color: #06101c; font-weight: 600; text-decoration: none;
+    box-shadow: 0 10px 30px -10px rgba(92, 200, 255, 0.55);
     transition: transform 0.15s, box-shadow 0.15s;
   }
-  .btn:hover { transform: translateY(-1px); box-shadow: 0 14px 34px -10px rgba(139, 92, 246, 0.75); }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 14px 34px -10px rgba(92, 200, 255, 0.75); }
   .btn svg { width: 18px; height: 18px; }
   .btn.small { padding: 8px 16px; border-radius: 11px; font-size: 14px; box-shadow: none; }
   .ghost {
@@ -80,9 +81,8 @@
   .hero::before {
     content: ""; position: absolute; inset: -200px -10% auto; height: 700px; z-index: -1;
     background:
-      radial-gradient(closest-side at 30% 40%, rgba(34, 211, 238, 0.16), transparent),
-      radial-gradient(closest-side at 70% 30%, rgba(139, 92, 246, 0.18), transparent),
-      radial-gradient(closest-side at 50% 80%, rgba(251, 146, 60, 0.08), transparent);
+      radial-gradient(closest-side at 30% 40%, rgba(92, 200, 255, 0.14), transparent),
+      radial-gradient(closest-side at 70% 30%, rgba(155, 123, 255, 0.16), transparent);
   }
   .tag {
     display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px; border-radius: 999px;
@@ -96,10 +96,44 @@
   .lead { color: var(--dim); font-size: 18.5px; max-width: 660px; margin: 0 auto 32px; }
   .actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
   .meta { color: var(--faint); font-size: 13.5px; margin-top: 16px; }
+
+  /* Puls-Ring über der Überschrift: Lichtkopf mit Schweif auf einer Herzschlag-Linie (den Pfad baut das Skript) */
+  .pulse { position: relative; width: 200px; height: 200px; margin: 0 auto 6px; }
+  .pulse svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .pulse .glow {
+    position: absolute; inset: 22px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(92, 200, 255, 0.34) 35%, transparent 70%);
+    animation: thump 0.8s ease-out infinite;
+  }
+  .pulse .disc {
+    position: absolute; inset: 36px; border-radius: 50%; display: grid; place-items: center; text-align: center;
+    background: radial-gradient(circle at 35% 30%, #22304f, #101828 70%);
+    border: 1px solid #2e3b5c; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    font-weight: 600; font-size: 25px; letter-spacing: 3px;
+  }
+  .pulse .disc small { display: block; font-size: 11px; letter-spacing: 0; font-weight: 400; color: var(--dim); }
+  html[data-lang="de"] .pulse [lang="en"], html[data-lang="en"] .pulse [lang="de"] { display: none; }
+  .pulse .t1 { stroke-dasharray: 340 2000; animation: t1 2.4s linear infinite; }
+  .pulse .t2 { stroke-dasharray: 200 2000; animation: t2 2.4s linear infinite; }
+  .pulse .t3 { stroke-dasharray: 100 2000; animation: t3 2.4s linear infinite; }
+  .pulse .t4 { stroke-dasharray: 28 2000; animation: t4 2.4s linear infinite; filter: drop-shadow(0 0 5px #5cc8ff); }
+  @keyframes t1 { from { stroke-dashoffset: 340; } to { stroke-dashoffset: -660; } }
+  @keyframes t2 { from { stroke-dashoffset: 200; } to { stroke-dashoffset: -800; } }
+  @keyframes t3 { from { stroke-dashoffset: 100; } to { stroke-dashoffset: -900; } }
+  @keyframes t4 { from { stroke-dashoffset: 28; } to { stroke-dashoffset: -972; } }
+  @keyframes thump {
+    0%, 29%, 100% { opacity: 0.5; transform: scale(1); } 34% { opacity: 1; transform: scale(1.07); }
+    41% { opacity: 0.62; transform: scale(1.01); } 48% { opacity: 0.82; transform: scale(1.04); } 64% { opacity: 0.5; transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pulse .glow, .pulse .t4 { animation: none; }
+    .pulse .t1, .pulse .t2, .pulse .t3 { display: none; }
+    .pulse .t4 { stroke-dasharray: none; filter: none; opacity: 0.55; }
+  }
   .shot {
     margin: 56px auto 0; max-width: 980px; border-radius: 18px; overflow: hidden;
     border: 1px solid var(--edge);
-    box-shadow: 0 40px 120px -30px rgba(34, 211, 238, 0.25), 0 30px 80px -20px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 40px 120px -30px rgba(92, 200, 255, 0.28), 0 30px 80px -20px rgba(0, 0, 0, 0.7);
   }
   .shot img { display: block; width: 100%; height: auto; }
 
@@ -110,8 +144,12 @@
   .intro { color: var(--dim); max-width: 640px; margin: 0 0 36px; }
 
   .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  /* Karten: dunkle Fläche, der Rand leuchtet oben links cyan und unten rechts violett - wie im Programm */
   .card {
-    background: var(--card); border: 1px solid var(--edge); border-radius: 18px; padding: 22px;
+    border: 1px solid transparent; border-radius: 20px; padding: 22px;
+    background:
+      linear-gradient(var(--card), var(--card)) padding-box,
+      linear-gradient(150deg, rgba(92, 200, 255, 0.42), rgba(255, 255, 255, 0.06) 34%, rgba(255, 255, 255, 0.06) 68%, rgba(155, 123, 255, 0.38)) border-box;
   }
   .icon {
     width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; margin-bottom: 14px;
@@ -146,7 +184,7 @@
     counter-increment: step; content: counter(step);
     position: absolute; top: 20px; left: 22px; width: 28px; height: 28px; border-radius: 50%;
     display: grid; place-items: center; font-weight: 700; font-size: 14px;
-    background: var(--grad); color: #fff;
+    background: var(--grad); color: #06101c;
   }
   kbd {
     font: inherit; font-size: 13px; padding: 1px 7px; border-radius: 6px;
@@ -163,7 +201,7 @@
 
   .cta {
     margin-top: 84px; padding: 46px 28px; border-radius: 24px; text-align: center;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(139, 92, 246, 0.14));
+    background: linear-gradient(135deg, rgba(92, 200, 255, 0.1), rgba(155, 123, 255, 0.14));
     border: 1px solid var(--edge);
   }
   .cta h2 { margin-top: 0; }
@@ -201,10 +239,7 @@
 <header>
   <div class="wrap bar">
     <a class="logo" href="#top">
-      <svg viewBox="0 0 66 52" aria-hidden="true">
-        <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
-        <path d="M2 30h16l8-16 10 36 10-48 8 28h10" fill="none" stroke="url(#g)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <span class="mark"><svg viewBox="0 0 66 52" aria-hidden="true"><path d="M2 30h16l8-16 10 36 10-48 8 28h10" fill="none" stroke="#06101c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="name"><span>Puls</span><b>Rig</b></span>
     </a>
     <nav>
@@ -226,7 +261,19 @@
 <main id="top">
   <div class="hero">
     <div class="wrap">
-      <span class="tag"><i></i><span lang="de">Kostenlos · Windows 10 und 11</span><span lang="en">Free · Windows 10 and 11</span></span>
+      <div class="pulse" aria-hidden="true">
+        <div class="glow"></div>
+        <svg viewBox="0 0 300 300">
+          <defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5cc8ff"/><stop offset="1" stop-color="#9b7bff"/></linearGradient></defs>
+          <circle cx="150" cy="150" r="118" fill="none" stroke="#1c2540" stroke-width="2"/>
+          <path class="ecg t1" pathLength="1000" fill="none" stroke="url(#pg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.2"/>
+          <path class="ecg t2" pathLength="1000" fill="none" stroke="url(#pg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>
+          <path class="ecg t3" pathLength="1000" fill="none" stroke="#5cc8ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.75"/>
+          <path class="ecg t4" pathLength="1000" fill="none" stroke="#e6f7ff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="disc"><div>SCAN<small lang="de">Treiber prüfen</small><small lang="en">Check drivers</small></div></div>
+      </div>
+      <span class="tag"><i></i><span lang="de">Neu: Aussehen „Nacht Puls“ · kostenlos für Windows 10 und 11</span><span lang="en">New: “Night Pulse” look · free for Windows 10 and 11</span></span>
       <h1>
         <span lang="de">Treiber, Boost und Hardware-Check <em>in einem Programm</em></span>
         <span lang="en">Drivers, boost and hardware check <em>in one app</em></span>
@@ -243,7 +290,7 @@
         <a class="ghost" href="#funktionen"><span lang="de">Was es kann</span><span lang="en">What it does</span></a>
       </div>
       <p class="meta" id="meta"><span lang="de">Testversion · Setup-Datei, rund 2 MB</span><span lang="en">Beta · setup file, about 2 MB</span></p>
-      <div class="shot"><img src="bilder/start.png" width="1108" height="728" alt="PulsRig mit dem SCAN-Knopf"></div>
+      <div class="shot"><img src="bilder/start.png" width="1108" height="728" alt="PulsRig im Aussehen Nacht Puls: SCAN-Knopf mit Puls-Ring, Live-Werte, Änderungen und Gaming-Check"></div>
     </div>
   </div>
 
@@ -263,8 +310,8 @@
           <h3>Scan</h3>
           <p lang="de">Neuere Treiber für alle Geräte.</p>
           <p lang="en">Newer drivers for every device.</p>
-          <ul lang="de"><li>Windows Update, NVIDIA, AMD und der Microsoft-Katalog</li><li>Geräte mit Fehlern auf einen Blick</li><li>Sicherung vor jeder Installation</li></ul>
-          <ul lang="en"><li>Windows Update, NVIDIA, AMD and the Microsoft Catalog</li><li>Devices with errors at a glance</li><li>Backup before every install</li></ul>
+          <ul lang="de"><li>Windows Update, NVIDIA, AMD und der Microsoft-Katalog</li><li>Geräte mit Fehlern auf einen Blick</li><li>Live-Werte und Änderungen auf der Startseite</li></ul>
+          <ul lang="en"><li>Windows Update, NVIDIA, AMD and the Microsoft Catalog</li><li>Devices with errors at a glance</li><li>Live values and recent changes on the start page</li></ul>
         </div>
         <div class="card">
           <div class="icon" style="background: rgba(251,146,60,.14); color: var(--orange)">
@@ -283,8 +330,8 @@
           <h3><span lang="de">Werkzeuge</span><span lang="en">Tools</span></h3>
           <p lang="de">Reparaturen ohne Suchen in Windows.</p>
           <p lang="en">Fixes without digging through Windows.</p>
-          <ul lang="de"><li>Ton, Netzwerk, Bildauflösung, Gerätefehler</li><li>Treiber sichern und Offline-Paket</li><li>Autostart und Speicherplatz freigeben</li></ul>
-          <ul lang="en"><li>Sound, network, display resolution, device errors</li><li>Driver backup and offline package</li><li>Startup apps and freeing disk space</li></ul>
+          <ul lang="de"><li>Ton, Netzwerk, Bildauflösung, Gerätefehler</li><li>Treiber sichern, Autostart, Standby-Detektiv</li><li>Ein Suchfeld findet jedes Werkzeug</li></ul>
+          <ul lang="en"><li>Sound, network, display resolution, device errors</li><li>Driver backup, startup apps, sleep detective</li><li>A search box finds every tool</li></ul>
         </div>
         <div class="card">
           <div class="icon" style="background: rgba(52,211,153,.14); color: var(--good)">
@@ -293,8 +340,8 @@
           <h3>Hardware</h3>
           <p lang="de">Prüfen, ob der PC gesund ist.</p>
           <p lang="en">Check whether the PC is healthy.</p>
-          <ul lang="de"><li>Stabilitätstest für Prozessor und Grafikkarte</li><li>Laufwerke mit Tempo und Verlauf</li><li>Arbeitsspeicher und Prüfbericht</li></ul>
-          <ul lang="en"><li>Stability test for CPU and graphics card</li><li>Drives with speed test and history</li><li>Memory check and report</li></ul>
+          <ul lang="de"><li>Stabilitätstest, Laufwerke, Arbeitsspeicher</li><li>Abstürze verstehen, Alter des BIOS</li><li>Jede Karte zeigt ihr Ergebnis als Bild</li></ul>
+          <ul lang="en"><li>Stability test, drives, memory</li><li>Understand crashes, BIOS age</li><li>Every card shows its result as a picture</li></ul>
         </div>
       </div>
 
@@ -344,11 +391,11 @@
         </figure>
         <figure>
           <img src="bilder/werkzeuge.png" width="1108" height="728" loading="lazy" alt="Werkzeuge">
-          <figcaption><span lang="de">Werkzeuge: schnelle Reparaturen, Treiber, System und Spiele</span><span lang="en">Tools: quick fixes, drivers, system and games</span></figcaption>
+          <figcaption><span lang="de">Werkzeuge: schnelle Reparaturen, Treiber, System und Spiele, mit Suchfeld</span><span lang="en">Tools: quick fixes, drivers, system and games, with a search box</span></figcaption>
         </figure>
         <figure>
           <img src="bilder/hardware.png" width="1108" height="728" loading="lazy" alt="Hardware">
-          <figcaption><span lang="de">Hardware: Sensoren, Stabilitätstest, Laufwerke, Arbeitsspeicher</span><span lang="en">Hardware: sensors, stability test, drives, memory</span></figcaption>
+          <figcaption><span lang="de">Hardware: jede Karte zeigt ihr Ergebnis als kleines Bild</span><span lang="en">Hardware: every card shows its result as a small picture</span></figcaption>
         </figure>
       </div>
       <p class="note"><span lang="de">Die Bilder zeigen Beispieldaten. Ein Klick vergrößert sie.</span><span lang="en">The screenshots show sample data and are in German. Click to enlarge.</span></p>
@@ -442,6 +489,23 @@
 <div class="zoom" id="zoom"><img alt=""></div>
 
 <script>
+  // Puls-Ring: Herzschlag-Linie um den Kreis, drei Schläge je Runde (wie die Ring-Animation im Programm)
+  (function () {
+    var beat = [[0, 0], [0.14, 0], [0.18, 2.5], [0.22, 0], [0.3, 0], [0.315, -2], [0.34, 18], [0.365, -8], [0.385, 0], [0.5, 0], [0.57, 4], [0.64, 0], [1, 0]];
+    function shift(t) {
+      for (var k = 1; k < beat.length; k++) {
+        if (t <= beat[k][0]) { var a = beat[k - 1], b = beat[k]; return a[1] + (b[1] - a[1]) * (t - a[0]) / (b[0] - a[0]); }
+      }
+      return 0;
+    }
+    var d = '';
+    for (var i = 0; i <= 1080; i++) {
+      var u = i / 1080, r = 118 + shift((u * 3) % 1), w = -Math.PI / 2 + u * 2 * Math.PI;
+      d += (i ? 'L' : 'M') + (150 + r * Math.cos(w)).toFixed(2) + ' ' + (150 + r * Math.sin(w)).toFixed(2);
+    }
+    document.querySelectorAll('.pulse .ecg').forEach(function (p) { p.setAttribute('d', d); });
+  })();
+
   // Sprache: gespeicherte Wahl, sonst die des Browsers
   (function () {
     var root = document.documentElement;
