@@ -6,7 +6,7 @@ Windows-Programm für Treiber, Boost und Werkzeuge: sucht neuere Treiber (Window
 
 **Testversion.** Fehler bitte mit dem Diagnose-Paket an pulsrig.hilfe@gmail.com schicken (im Programm: Hardware → Diagnose-Paket → „Per E-Mail schicken“).
 
-![Startseite von PulsRig mit dem SCAN-Knopf](bilder/start.png)
+![PulsRig im Aussehen Nacht Puls: SCAN-Knopf mit Puls-Ring, Live-Werte, Änderungen und Gaming-Check](bilder/start.png)
 
 | Ergebnisse eines Scans | Hardware-Seite |
 | --- | --- |
