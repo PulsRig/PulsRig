@@ -4,13 +4,13 @@ Windows-Programm für Treiber, Boost und Werkzeuge: sucht neuere Treiber (Window
 
 **Webseite:** https://pulsrig.github.io/PulsRig/
 
-**Testversion.** Fehler bitte mit dem Diagnose-Paket an pulsrig.hilfe@gmail.com schicken (im Programm: Hardware → Diagnose-Paket → „Per E-Mail schicken“).
+**Testversion.** Fehler bitte mit dem Diagnose-Paket an pulsrig.hilfe@gmail.com schicken (im Programm: Hardware → Bericht & Diagnose → „Als ZIP speichern“, danach „Per E-Mail schicken“).
 
 ![PulsRig im Aussehen Nacht Puls: SCAN-Knopf mit Puls-Ring, Live-Werte, Änderungen und Gaming-Check](bilder/start.png)
 
 | Ergebnisse eines Scans | Hardware-Seite |
 | --- | --- |
-| ![Liste mit neueren Treibern und Geräten mit Fehlern](bilder/ergebnisse.png) | ![Sensoren, Stabilitätstest, Laufwerke, Arbeitsspeicher, Diagnose-Paket und Prüfbericht](bilder/hardware.png) |
+| ![Liste mit neueren Treibern und Geräten mit Fehlern](bilder/ergebnisse.png) | ![Sensoren, Stabilitätstest, Laufwerke, Arbeitsspeicher, Abstürze, Bildschirm, Bericht & Diagnose und BIOS](bilder/hardware.png) |
 
 Die Bilder zeigen Beispieldaten.
 
