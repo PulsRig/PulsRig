@@ -2,7 +2,7 @@
 
 Windows-Programm für Treiber, Boost und Werkzeuge: sucht neuere Treiber (Windows Update, NVIDIA, AMD, Microsoft-Katalog), schafft vor dem Spielen Platz und bringt Prüfungen für Hardware mit.
 
-**Webseite:** https://pulsrig.github.io/PulsRig/
+**Webseite:** https://pulsrig.github.io/PulsRig/ · **Quelltext:** [PulsRig/PulsRig-Code](https://github.com/PulsRig/PulsRig-Code) (GPL-3.0)
 
 **Testversion.** Fehler bitte mit dem Diagnose-Paket an pulsrig.hilfe@gmail.com schicken (im Programm: Hardware → Bericht & Diagnose → „Als ZIP speichern“, danach „Per E-Mail schicken“).
 
