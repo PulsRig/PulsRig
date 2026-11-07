@@ -1,8 +1,8 @@
 {
     "Version":  "1.0",
-    "BuildId":  "20261106-190751",
-    "Gebaut":  "06.11.2026 19:07 · Build 20261106-190751 · Stand a1d98f0",
-    "Setup":  "https://github.com/PulsRig/PulsRig/releases/download/v1.0-20261106-190751/PulsRig-Setup-1.0-20261106-190751.exe",
-    "Bytes":  56306599,
-    "Sha256":  "64743B0BC7AA75B2C4A118A9211C1CD24E63C6710CC6B03CD17FC4775C0DD34D"
+    "BuildId":  "20261107-112523",
+    "Gebaut":  "07.11.2026 11:25 · Build 20261107-112523 · Stand 5f2e1f6",
+    "Setup":  "https://github.com/PulsRig/PulsRig/releases/download/v1.0-20261107-112523/PulsRig-Setup-1.0-20261107-112523.exe",
+    "Bytes":  56306901,
+    "Sha256":  "5B8E0154DC3F20F24C373E4CE0E099E0D8AB4F4EB66B0CE68663C3708FD2C8A6"
 }
